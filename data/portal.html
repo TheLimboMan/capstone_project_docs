@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CAPSTONE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h3 {
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    form, .location-editor {
+      background-color: white;
+      padding: 15px 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    .password-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .toggle-btn {
+      margin-left: 8px;
+      cursor: pointer;
+      font-size: 20px;
+      background: none;
+      border: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    input[type="submit"], button {
+      margin-top: 15px;
+      padding: 8px 15px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    ul li {
+      padding: 8px;
+      background: #f9f9f9;
+      margin-bottom: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: red;
+      font-size: 18px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WiFi Portal -->
+  <h3>WiFi Settings</h3>
+  <form action="/get" method="GET">
+    SSID:<br>
+    <input type="text" name="ssid"><br><br>
+    PASS:<br>
+    <div class="password-container">
+      <input type="password" id="passwordField" name="pass">
+      <button type="button" id="toggleBtn" class="toggle-btn" onclick="togglePassword()" title="Show password">👁️</button>
+    </div>
+    <br>
+    Database URL:<br>
+    <input type="text" name="database"><br><br>
+    <input type="button" onclick="submitWiFi()" value="Submit">
+  </form>
+
+  <!-- Location Editor -->
+  <div class="location-editor">
+    <h3>Location Editor</h3>
+    <input type="text" id="locationInput" placeholder="Enter location">
+    <button type="button" onclick="addLocation()">Add</button>
+    <ul id="locationList"></ul>
+    <button type="button" onclick="submitLocations()">Submit</button>
+  </div>
+
+  <script>
+    let originalLocations = [];   // tracks what we loaded initially
+
+    // Load WiFi config and locations on page load
+    window.onload = async () => {
+      // WiFi config
+      const resConfig = await fetch("/get_config");
+      const data = await resConfig.json();
+      document.querySelector("input[name=ssid]").value = data.ssid;
+      document.querySelector("input[name=pass]").value = data.pass;
+      document.querySelector("input[name=database]").value = data.database;
+
+      // Load locations from loc.txt
+      const resLoc = await fetch("/loc.txt");
+      if (resLoc.ok) {
+        const text = await resLoc.text();
+        originalLocations = text.split(/\r?\n/).filter(l => l.trim() !== "");
+        originalLocations.forEach(loc => addLocation(loc, false));
+      }
+    };
+	
+	function submitWiFi() {
+		const ssid = document.querySelector("input[name=ssid]").value;
+		const pass = document.querySelector("input[name=pass]").value;
+		const database = document.querySelector("input[name=database]").value;
+
+		const params = new URLSearchParams();
+		params.append("ssid", ssid);
+		params.append("pass", pass);
+		params.append("database", database);
+
+		fetch("/get?" + params.toString(), { method: "GET" })
+			.then(res => {
+				if (res.ok) alert("WiFi settings saved!");
+				else alert("Failed to save WiFi settings.");
+			})
+			.catch(err => console.error(err));
+	}
+
+    // Password toggle
+    function togglePassword() {
+      const passwordField = document.getElementById("passwordField");
+      const toggleBtn = document.getElementById("toggleBtn");
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleBtn.textContent = "👁️‍🗨️"; 
+        toggleBtn.title = "Hide password";
+      } else {
+        passwordField.type = "password";
+        toggleBtn.textContent = "👁️"; 
+        toggleBtn.title = "Show password";
+      }
+    }
+
+    // Add location to list
+    function addLocation(value = null, clearInput = true) {
+      const input = document.getElementById("locationInput");
+      const val = value ?? input.value.trim();
+      if (!val) return;
+
+      const ul = document.getElementById("locationList");
+      const li = document.createElement("li");
+      li.textContent = val;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.textContent = "❌";
+      removeBtn.classList.add("remove-btn");
+      removeBtn.onclick = () => li.remove();
+
+      li.appendChild(removeBtn);
+      ul.appendChild(li);
+
+      if (clearInput && !value) input.value = "";
+    }
+
+    // Submit all current locations, also send back deleted ones
+    function submitLocations() {
+      const ul = document.getElementById("locationList");
+      const currentLocations = Array.from(ul.children).map(li => li.firstChild.textContent);
+
+      // figure out which were deleted
+      const deleted = originalLocations.filter(loc => !currentLocations.includes(loc));
+
+      // 1. Save updated locations
+      fetch("/save_loc", {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: currentLocations.join("\n")
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to save locations.");
+        // 2. Tell ESP32 which ones were deleted
+        if (deleted.length > 0) {
+          return fetch("/del_loc", {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: deleted.join("\n")
+          });
+        }
+      })
+      .then(() => {
+        alert("Locations updated!");
+        originalLocations = currentLocations; // update reference
+      })
+      .catch(err => console.error(err));
+    }
+  </script>
+
+</body>
+</html>
