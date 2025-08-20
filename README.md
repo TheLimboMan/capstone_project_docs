@@ -2,7 +2,7 @@
 A repository for my capstone project code and miscellaneous files
 
 # Wiring:
-```
+<pre>
 ┌────────────────────────┐                                                                                               
 │Interfacing Components: │                                                                                               
 └────────────────────────┘                                                                                               
@@ -58,4 +58,4 @@ A repository for my capstone project code and miscellaneous files
 │                                                          │ │                                                          │
 │                                                          │ │ Yes, this works on RX->RX TX->TX and not RX->TX TX->RX   │
 └──────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────┘
-```
+</pre>
