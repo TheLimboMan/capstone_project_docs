@@ -38,7 +38,7 @@ A repository for my capstone project code and miscellaneous files
 │ YLLW --> B+ (on RS485 to TTL)                                                                                         │
 │ GREN --> A- (on RS485 to TTL)                                                                                         │
 │                                                                                                                       │
-│ 接大地 -> !!!NC!!!                                                                                                     │
+│ 接大地 -> !!!NC!!!                                                                                                    │
 │                                                                                                                       │
 │ Address is 0x05, first byte needs to be 0x05                                                                          │
 │                                                                                                                       │
