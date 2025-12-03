@@ -9,6 +9,7 @@ Sensor::Sensor(){
     PotaVal = 0;
     MoistVal = 0;
     AirVal = 0;
+    stopRepeat = false;
 }
 
 void Sensor::initSensor(){
@@ -21,6 +22,7 @@ void Sensor::resetAll(){
     PotaVal = 0;
     MoistVal = 0;
     AirVal = 0;
+    stopRepeat = false;
 
     Serial.println(" ");
 
@@ -112,3 +114,40 @@ void Sensor::refreshAll(){
     refreshAir(); 
     refreshMoist();
 }
+
+void Sensor::refreshRepeat(){
+    AirVal = 0;
+    AirValTemp = 0;
+
+    MoistVal = 0;
+    MoistValTemp = 0;
+
+    stopRepeat = false;
+
+    for(int i=0;i<repeatAmount;i++){
+        if(stopRepeat){
+            stopRepeat = false;
+            break;
+        }
+        AirValTemp = analogRead(AirPin);
+        MoistValTemp = analogRead(MoistPin);
+        Serial.println(" ");
+        Serial.print("Air Quality No."); Serial.print(i); Serial.print(": "); Serial.print(AirValTemp);
+        Serial.print("Soil Moisture No."); Serial.print(i); Serial.print(": "); Serial.print(MoistValTemp);
+        Serial.println(" "); 
+        AirVal = AirVal + AirValTemp;
+        MoistVal = MoistVal + MoistValTemp;
+        delay(repeatDelay);
+    }
+
+    AirVal = AirVal/repeatAmount; //get average
+    MoistVal = MoistVal/repeatAmount; //get average
+    Serial.println(" ");
+    Serial.print("Air Quality: "); Serial.print(AirVal);
+    Serial.print("Soil Moisture: "); Serial.print(MoistVal);
+    Serial.println(" ");
+}
+
+//make it so that it samples data for 15mins
+//make it so that the if the npk sensor fails the other data can still be used, the point of failure is there.
+//make this repeat special so it can be multithreading

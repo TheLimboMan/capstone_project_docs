@@ -96,4 +96,7 @@ const int cyan = 0b011;
 const int white = 0b111;
 const int off = 0;
 
+const int repeatAmount = 450;
+const int repeatDelay = 2000; //in ms
+
 #endif
