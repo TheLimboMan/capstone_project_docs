@@ -29,10 +29,27 @@ MENU_SCREEN(dataReading, dataReadingItems,
         sdcard.serverOut();
         menu.refresh();
         }),
+    ITEM_SUBMENU("Repeat Capture", dataReadingRepeat),
     ITEM_BASIC("===================="),
     ITEM_VALUE("N", sensor.NitroVal, "%d"),
     ITEM_VALUE("P", sensor.PhosVal, "%d"),
     ITEM_VALUE("K", sensor.PotaVal, "%d"),
+    ITEM_VALUE("Air", sensor.AirVal, "%d"),
+    ITEM_VALUE("Moist", sensor.MoistVal, "%d"),
+    ITEM_BASIC("===================="),
+    ITEM_SUBMENU("Main Menu", mainMenu)
+);
+
+MENU_SCREEN(dataReadingRepeat, dataReadingRepeatItems,
+    ITEM_COMMAND("Repeat Capture Data", []() {
+        sensor.Repeat = true;
+        menu.refresh();
+        }),
+    ITEM_BASIC("DEBUG==============="),
+    ITEM_VALUE("Moist", sensor.MoistVal, "%d"),
+    ITEM_VALUE("Samp", sensor.sampleCount, "%d"),
+    ITEM_VALUE("AirAvg", sensor.AirValTempSum, "%d"),
+    ITEM_VALUE("MoistAvg", sensor.MoistValTempSum, "%d"),
     ITEM_VALUE("Air", sensor.AirVal, "%d"),
     ITEM_VALUE("Moist", sensor.MoistVal, "%d"),
     ITEM_BASIC("===================="),

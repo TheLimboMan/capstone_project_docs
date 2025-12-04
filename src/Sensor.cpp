@@ -8,8 +8,12 @@ Sensor::Sensor(){
     PhosVal = 0;
     PotaVal = 0;
     MoistVal = 0;
+    MoistValTempSum = 0;
     AirVal = 0;
-    stopRepeat = false;
+    AirValTempSum = 0;
+    Repeat = false;
+    previousMillis = millis();;
+    sampleCount = 0;
 }
 
 void Sensor::initSensor(){
@@ -21,8 +25,12 @@ void Sensor::resetAll(){
     PhosVal = 0;
     PotaVal = 0;
     MoistVal = 0;
+    MoistValTempSum = 0;
     AirVal = 0;
-    stopRepeat = false;
+    AirValTempSum = 0;
+    Repeat = false;
+    previousMillis = millis();;
+    sampleCount = 0;
 
     Serial.println(" ");
 
@@ -116,36 +124,41 @@ void Sensor::refreshAll(){
 }
 
 void Sensor::refreshRepeat(){
-    AirVal = 0;
-    AirValTemp = 0;
+    if(!Repeat) return;
+    
+    if(sampleCount >= repeatAmount){
+        AirVal = AirValTempSum/repeatAmount;
+        MoistVal = MoistValTempSum/repeatAmount;
+        Serial.print("Final Avg Air: "); Serial.println(AirVal);
+        Serial.print("Final Avg Moist: "); Serial.println(MoistVal);
 
-    MoistVal = 0;
-    MoistValTemp = 0;
-
-    stopRepeat = false;
-
-    for(int i=0;i<repeatAmount;i++){
-        if(stopRepeat){
-            stopRepeat = false;
-            break;
-        }
-        AirValTemp = analogRead(AirPin);
-        MoistValTemp = analogRead(MoistPin);
-        Serial.println(" ");
-        Serial.print("Air Quality No."); Serial.print(i); Serial.print(": "); Serial.print(AirValTemp);
-        Serial.print("Soil Moisture No."); Serial.print(i); Serial.print(": "); Serial.print(MoistValTemp);
-        Serial.println(" "); 
-        AirVal = AirVal + AirValTemp;
-        MoistVal = MoistVal + MoistValTemp;
-        delay(repeatDelay);
+        Repeat = false;
+        sampleCount = 0;
+        AirValTempSum = 0;
+        MoistValTempSum = 0;
+        previousMillis = millis();
+        return;
     }
 
-    AirVal = AirVal/repeatAmount; //get average
-    MoistVal = MoistVal/repeatAmount; //get average
-    Serial.println(" ");
-    Serial.print("Air Quality: "); Serial.print(AirVal);
-    Serial.print("Soil Moisture: "); Serial.print(MoistVal);
-    Serial.println(" ");
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= repeatDelay){
+        previousMillis = currentMillis;
+
+        AirValTemp = analogRead(AirPin);
+        MoistValTemp = analogRead(MoistPin);
+
+        AirValTempSum += AirValTemp;
+        MoistValTempSum += MoistValTemp;
+
+        Serial.print("Sample "); Serial.print(sampleCount + 1); 
+        Serial.print(": \nAir="); Serial.print(AirValTemp);
+        Serial.print(" Moist="); Serial.println(MoistValTemp);
+        Serial.print(" Current Air AVG="); Serial.println(AirValTempSum/(sampleCount+1));
+        Serial.print(" Current Moist AVG="); Serial.println(MoistValTempSum/(sampleCount+1));
+
+        sampleCount++;
+    }
+    
 }
 
 //make it so that it samples data for 15mins

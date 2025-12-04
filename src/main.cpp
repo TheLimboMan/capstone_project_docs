@@ -74,6 +74,7 @@ void setup() {
 }
 
 void loop() {
+  sensor.refreshRepeat();
   if(lcdclass.encoderEnable){
     my_encoder.observe();
   }//This is so i can disable encoder when shut down

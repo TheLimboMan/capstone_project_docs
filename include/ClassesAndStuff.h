@@ -11,7 +11,9 @@
 
 class Sensor{
     public:
-        bool stopRepeat;
+        bool Repeat;
+        int sampleCount;
+        unsigned long previousMillis;
 
         int NitroVal;
         int PhosVal;
@@ -19,9 +21,11 @@ class Sensor{
 
         int MoistVal;
         int MoistValTemp;
+        int MoistValTempSum;
         
         int AirVal;
         int AirValTemp;
+        int AirValTempSum;
         
         //get data from sensor, store in var above
         Sensor();
