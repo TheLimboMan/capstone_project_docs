@@ -12,7 +12,7 @@ Sensor::Sensor(){
 }
 
 void Sensor::initSensor(){
-    npk.begin(9600, SERIAL_8E1, RXD, TXD);
+    npk.begin(9600, SERIAL_8N1, RXD, TXD);
 }
 
 void Sensor::resetAll(){
@@ -52,7 +52,7 @@ void Sensor::refreshMoist(){
 
 void Sensor::refreshNPK(){
     byte values[11];
-    uint16_t finalVal = 0;
+    uint64_t finalVal = 0;
     byte index = 0;
     const uint8_t* cycleCommands[] = { nitro, phos, pota };
     int* cycleVar[] = {&NitroVal, &PhosVal, &PotaVal};
@@ -79,8 +79,9 @@ void Sensor::refreshNPK(){
             }
 
             if (index >= 5) {
+                uint64_t temp = (values[3] << 8) | values[4];
                 finalVal += (values[3] << 8) | values[4];
-                Serial.println(finalVal);
+                Serial.println(temp);
             } 
 
             else {

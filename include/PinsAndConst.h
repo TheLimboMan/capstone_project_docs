@@ -72,11 +72,11 @@ const int ledB = 12;
 +-----------+---------------+-------------------+
 */
 
-const __UINT8_TYPE__ nitro[] = {0x05, 0x03, 0x00, 0x03, 0x00, 0x06, 0x34, 0x4C};
-const __UINT8_TYPE__ phos[] = {0x05, 0x03, 0x00, 0x04, 0x00, 0x06, 0x85, 0x8D};
-const __UINT8_TYPE__ pota[] = {0x05, 0x03, 0x00, 0x05, 0x00, 0x06, 0xD4, 0x4D};
+const byte nitro[] = {0x05, 0x03, 0x00, 0x03, 0x00, 0x06, 0x34, 0x4C};
+const byte phos[] = {0x05, 0x03, 0x00, 0x04, 0x00, 0x06, 0x85, 0x8D}; 
+const byte pota[] = {0x05, 0x03, 0x00, 0x05, 0x00, 0x06, 0xD4, 0x4D}; 
 
-const int sampleSize = 5; //For NPK Sensor, this adjusts the amounts of time it samples the NPK readings, so that the results can be more consistent
+const int sampleSize = 100; //For NPK Sensor, this adjusts the amounts of time it samples the NPK readings, so that the results can be more consistent
 //Maybe the ability to change sample size in software, but that will be for another day hehe :)
 
 //RS485 to TTL PINS
