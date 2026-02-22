@@ -9,6 +9,9 @@ IoT-Based Soil and Air Quality Detection System for Maize Plantation Site Survey
 **Description:** 
 This project aims to develop a portable solution that can enable farmers to obtain soil and air quality data to get a first opinion on land usability for maize cultivation. This project attemps to streamline the process of obtaining data and provide a real-time, approachable user interface to gauge the land's usability, allowing the reduction of immediate reliance on time-consuming and labor-intensive laboratory testing. This fast, accessible approach empowers farmers to make data-driven decisions directly on-site, significantly improving operational efficiency and resource allocation before committing to formal lab analysis.
 
+**System Architecture:**
+<img width="4345" height="1843" alt="TheArchitecture" src="https://github.com/user-attachments/assets/a5adab81-58e4-43e3-b6e4-9e80407016a2" />
+
 **Features:**
 - Uses the ESP32 for it's powerful processing power and wireless connectivity
 - On Board LED Indicator for Status Indication
