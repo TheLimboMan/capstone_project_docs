@@ -26,7 +26,7 @@ MENU_SCREEN(dataReading, dataReadingItems,
     ITEM_COMMAND("Capture Data", []() {
         sensor.refreshAll(); 
         sdcard.addEntry(); 
-        sdcard.serverOut();
+        //sdcard.serverOut();
         menu.refresh();
         }),
     ITEM_BASIC("===================="),
@@ -42,7 +42,7 @@ MENU_SCREEN(dataReading, dataReadingItems,
 MENU_SCREEN(mainMenu, mainMenuItems,
     ITEM_BACK(),
     ITEM_SUBMENU("Location Selector", locationSelector),
-    ITEM_COMMAND("Upload Data", []() {wifiman.sync();}),
+    ITEM_COMMAND("Upload Data", []() {sdcard.serverOut();}),
     ITEM_COMMAND("Del Current Data", []() {sdcard.delEntry();}),
     ITEM_COMMAND("Shut Down", [](){lcdclass.sysOff();})
 );

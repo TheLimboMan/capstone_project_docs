@@ -45,7 +45,7 @@ class SDCard{
         int count = 0; //this keeps track of the number of locations listed in the txt file
 
         bool available; //always include check
-        int indexBuf[30];
+        int indexBuf[500];
 
         bool outputExist;
 
