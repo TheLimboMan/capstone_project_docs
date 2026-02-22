@@ -1,5 +1,26 @@
-# Capstone Project Docs
-A repository for my capstone project code and miscellaneous files
+# Docs For IoT-Based Soil and Air Quality Detection System for Maize Plantation Site Survey
+
+This is a repository for our capstone project code and miscellaneous files
+
+### About the project:
+**Title:** 
+IoT-Based Soil and Air Quality Detection System for Maize Plantation Site Survey
+
+**Description:** 
+This project aims to develop a portable solution that can enable farmers to obtain soil and air quality data to get a first opinion on land usability for maize cultivation. This project attemps to streamline the process of obtaining data and provide a real-time, approachable user interface to gauge the land's usability, allowing the reduction of immediate reliance on time-consuming and labor-intensive laboratory testing. This fast, accessible approach empowers farmers to make data-driven decisions directly on-site, significantly improving operational efficiency and resource allocation before committing to formal lab analysis.
+
+**Features:**
+- Uses the ESP32 for it's powerful processing power and wireless connectivity
+- On Board LED Indicator for Status Indication
+- Sensors:
+
+    - NPK Sensor
+    - Air Quality Sensor
+    - Soil Moisture Sensor
+  
+- SD Card For Offline Data Storage
+- LCD Display To Display Captured Data
+- Ability To Transfer Data To A Server Through HTTP
 
 # Wiring:
 <img width="2218" height="2020" alt="Wiring Diagram" src="https://github.com/user-attachments/assets/304eac7f-bed8-4687-9804-462f5b552a20" />
