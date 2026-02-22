@@ -8,12 +8,7 @@ Sensor::Sensor(){
     PhosVal = 0;
     PotaVal = 0;
     MoistVal = 0;
-    MoistValTempSum = 0;
     AirVal = 0;
-    AirValTempSum = 0;
-    Repeat = false;
-    previousMillis = millis();;
-    sampleCount = 0;
 }
 
 void Sensor::initSensor(){
@@ -25,12 +20,7 @@ void Sensor::resetAll(){
     PhosVal = 0;
     PotaVal = 0;
     MoistVal = 0;
-    MoistValTempSum = 0;
     AirVal = 0;
-    AirValTempSum = 0;
-    Repeat = false;
-    previousMillis = millis();;
-    sampleCount = 0;
 
     Serial.println(" ");
 
@@ -123,45 +113,3 @@ void Sensor::refreshAll(){
     refreshAir(); 
     refreshMoist();
 }
-
-void Sensor::refreshRepeat(){
-    if(!Repeat) return;
-    
-    if(sampleCount >= repeatAmount){
-        AirVal = AirValTempSum/repeatAmount;
-        MoistVal = MoistValTempSum/repeatAmount;
-        Serial.print("Final Avg Air: "); Serial.println(AirVal);
-        Serial.print("Final Avg Moist: "); Serial.println(MoistVal);
-
-        Repeat = false;
-        sampleCount = 0;
-        AirValTempSum = 0;
-        MoistValTempSum = 0;
-        previousMillis = millis();
-        return;
-    }
-
-    unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= repeatDelay){
-        previousMillis = currentMillis;
-
-        AirValTemp = analogRead(AirPin);
-        MoistValTemp = analogRead(MoistPin);
-
-        AirValTempSum += AirValTemp;
-        MoistValTempSum += MoistValTemp;
-
-        Serial.print("Sample "); Serial.print(sampleCount + 1); 
-        Serial.print(": \nAir="); Serial.print(AirValTemp);
-        Serial.print(" Moist="); Serial.println(MoistValTemp);
-        Serial.print(" Current Air AVG="); Serial.println(AirValTempSum/(sampleCount+1));
-        Serial.print(" Current Moist AVG="); Serial.println(MoistValTempSum/(sampleCount+1));
-
-        sampleCount++;
-    }
-    
-}
-
-//make it so that it samples data for 15mins
-//make it so that the if the npk sensor fails the other data can still be used, the point of failure is there.
-//make this repeat special so it can be multithreading

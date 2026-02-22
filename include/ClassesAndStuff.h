@@ -11,21 +11,13 @@
 
 class Sensor{
     public:
-        bool Repeat;
-        int sampleCount;
-        unsigned long previousMillis;
-
         int NitroVal;
         int PhosVal;
         int PotaVal;
 
         int MoistVal;
-        int MoistValTemp;
-        int MoistValTempSum;
         
         int AirVal;
-        int AirValTemp;
-        int AirValTempSum;
         
         //get data from sensor, store in var above
         Sensor();
@@ -35,7 +27,6 @@ class Sensor{
         void refreshMoist();
         void refreshNPK();
         void refreshAll();
-        void refreshRepeat();
 };
 
 class ledManager{
